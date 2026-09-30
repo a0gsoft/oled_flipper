@@ -15,6 +15,4 @@ This is the customized version of the official **qFlipper** companion desktop ap
    - **DFU Recovery Mode**: Hold `BOOT0` on the WeAct board while plugging into USB, then release `BOOT0`. Click **REPAIR** or **Install from file** to flash custom firmware.
 
 ## 🛠️ Source Code & Building
-The full source code of this edition is located at:
-`C:\Users\artem\Desktop\qflipper`
-It includes GitHub Actions CI (`.github/workflows/ci.yml`) to automatically compile Windows, Linux, and macOS releases upon pushing to GitHub.
+The source code and build instructions for this customized edition are maintained within the [oled_flipper](https://github.com/a0gsoft/oled_flipper) project.

@@ -93,3 +93,14 @@ CHANGELOG_v*.md
 telegram_bot/
 *.otp.bin
 mics/FlipperOTP/*.bin
+
+# Local artifacts, scratch & exports
+scratch/
+*.gbr
+*.drl
+*.gbrjob
+*.kicad_prl
+*-backups/
+drc_report.json
+fp-lib-table
+rfid_lf_gerber.zip

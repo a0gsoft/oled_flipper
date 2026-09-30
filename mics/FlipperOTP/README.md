@@ -1,11 +1,11 @@
 # 🐬 DIY Flipper Zero — OTP Tool
 
-[![GitHub](https://img.shields.io/badge/GitHub-oled__flipper-orange?logo=github)](https://github.com/artema0g/oled_flipper)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/artema0g/oled_flipper/blob/main/LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-oled__flipper-orange?logo=github)](https://github.com/a0gsoft/oled_flipper)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/a0gsoft/oled_flipper/blob/main/LICENSE)
 
 Standalone Windows application to **generate**, **flash**, and **read** the OTP (One-Time Programmable) memory profile for the DIY Flipper Zero (SSD1306 OLED & MCP23017 edition).
 
-> Part of the [**oled_flipper**](https://github.com/artema0g/oled_flipper) project.
+> Part of the [**oled_flipper**](https://github.com/a0gsoft/oled_flipper) project.
 
 ![FlipperOTP GUI Screenshot](screen.png)
 
@@ -139,10 +139,10 @@ Requires: Python 3.11+, PyInstaller, tkinter.
 
 ## 🤝 Credits & Author
 
-Developed by [**artema0g**](https://github.com/artema0g).
+Developed by [**a0gsoft**](https://github.com/a0gsoft).
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [GNU General Public License v3.0](https://github.com/artema0g/oled_flipper/blob/main/LICENSE).
+This project is licensed under the [GNU General Public License v3.0](https://github.com/a0gsoft/oled_flipper/blob/main/LICENSE).

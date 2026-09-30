@@ -1,7 +1,7 @@
 # ⚙️ DIY Flipper Zero (OLED Version)
 Custom firmware fork supporting standard I2C OLED screens (SH1106 and SSD1306) on DIY Flipper hardware.
 
-[![FBT Build](https://img.shields.io/badge/build-FBT-blue.svg)](https://github.com/artema0g/oled_flipper)
+[![FBT Build](https://img.shields.io/badge/build-FBT-blue.svg)](https://github.com/a0gsoft/oled_flipper)
 [![Platform](https://img.shields.io/badge/platform-STM32WB55-orange.svg)](https://www.st.com/en/microcontrollers-microprocessors/stm32wb-series.html)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Me-red?style=flat&logo=kofi)](https://ko-fi.com/artema0g)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](LICENSE)
@@ -11,7 +11,7 @@ Custom firmware fork supporting standard I2C OLED screens (SH1106 and SSD1306) o
 
 > [!TIP]
 > ❓ Need help or have questions about building/flashing the DIY Flipper? 
-> Join our community Q&A and troubleshooting discussion: **[GitHub Q&A Discussion #4](https://github.com/artema0g/oled_flipper/discussions/4)**
+> Join our community Q&A and troubleshooting discussion: **[GitHub Discussions](https://github.com/a0gsoft/oled_flipper/discussions)**
 
 ---
 
