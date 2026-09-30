@@ -83,13 +83,14 @@ bool furi_hal_ina219_init(void) {
                              ina_read_reg16(INA226_REG_DIE_ID, &die_id);
                 furi_hal_i2c_release(&furi_hal_i2c_handle_power);
 
-                if(is_226 && mfg_id == INA226_MANUFACTURER_ID_VAL) {
+                if(is_226 && mfg_id == INA226_MANUFACTURER_ID_VAL && die_id == INA226_DIE_ID_VAL) {
                     s_is_ina226 = true;
-                    // Calibrate INA226 for 0.1 Ohm shunt: CAL = 512 (0x0200)
+                    // Configure INA226: 64x averaging (0x4727) and calibrate for 0.1 Ohm shunt (CAL = 0x0200)
                     furi_hal_i2c_acquire(&furi_hal_i2c_handle_power);
+                    ina_write_reg16(INA_REG_CONFIG, 0x4727);
                     ina_write_reg16(INA_REG_CALIBRATION, 0x0200);
                     furi_hal_i2c_release(&furi_hal_i2c_handle_power);
-                    FURI_LOG_I(TAG, "Detected INA226 at 0x%02X (Die=0x%04X, MFG=0x%04X)", s_address, die_id, mfg_id);
+                    FURI_LOG_I(TAG, "Detected INA226 at 0x%02X (Die=0x%04X, MFG=0x%04X, 64x avg)", s_address, die_id, mfg_id);
                 } else {
                     s_is_ina226 = false;
                     FURI_LOG_I(TAG, "Detected INA219 at 0x%02X (CONFIG=0x%04X)", s_address, cfg);

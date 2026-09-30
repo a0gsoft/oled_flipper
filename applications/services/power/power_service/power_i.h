@@ -13,6 +13,10 @@
 
 #include <power/power_service/power_settings.h>
 
+#ifndef POWER_HEALTH_LOW_THRESHOLD
+#define POWER_HEALTH_LOW_THRESHOLD (70U)
+#endif
+
 typedef enum {
     PowerStateNotCharging,
     PowerStateCharging,
@@ -57,8 +61,6 @@ typedef enum {
 typedef enum {
     PowerMessageTypeShutdown,
     PowerMessageTypeReboot,
-    PowerMessageTypeGetInfo,
-    PowerMessageTypeIsBatteryHealthy,
     PowerMessageTypeShowBatteryLowWarning,
     PowerMessageTypeSwitchOTG,
 

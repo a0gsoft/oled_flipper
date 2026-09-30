@@ -70,18 +70,6 @@ FuriHalRfid* furi_hal_rfid = NULL;
 #define LFRFID_LL_EMULATE_TIM     TIM2
 #define LFRFID_LL_EMULATE_CHANNEL LL_TIM_CHANNEL_CH3
 
-/* WeAct: PA0 (header A0 next to NR) = COMP1_OUT debug mirror. Same pin as IR RX. */
-static const GpioPin gpio_rfid_comp_out = {.port = GPIOA, .pin = LL_GPIO_PIN_0};
-
-static void furi_hal_rfid_comp_out_config(void) {
-    furi_hal_gpio_init_ex(
-        &gpio_rfid_comp_out,
-        GpioModeAltFunctionPushPull,
-        GpioPullNo,
-        GpioSpeedVeryHigh,
-        GpioAltFn12COMP1);
-}
-
 void furi_hal_rfid_init(void) {
     furi_check(furi_hal_rfid == NULL);
     furi_hal_rfid = malloc(sizeof(FuriHalRfid));
@@ -104,8 +92,6 @@ void furi_hal_rfid_init(void) {
     LL_COMP_Init(COMP1, &COMP_InitStruct);
     LL_COMP_SetCommonWindowMode(__LL_COMP_COMMON_INSTANCE(COMP1), LL_COMP_WINDOWMODE_DISABLE);
 
-    furi_hal_rfid_comp_out_config();
-
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_20);
     LL_EXTI_EnableFallingTrig_0_31(LL_EXTI_LINE_20);
     LL_EXTI_EnableRisingTrig_0_31(LL_EXTI_LINE_20);
@@ -124,12 +110,10 @@ void furi_hal_rfid_pins_reset(void) {
     furi_hal_gpio_init(&gpio_rfid_carrier_out, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
     furi_hal_gpio_write(&gpio_rfid_carrier_out, false);
 
-    // from both sides
-    furi_hal_gpio_init(&gpio_nfc_irq_rfid_pull, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);
-    furi_hal_gpio_write(&gpio_nfc_irq_rfid_pull, true);
+    // PA2: NFC IRQ + Q3 base. Analog idle so R8 holds Q3 off and ST25R3916 can drive IRQ.
+    furi_hal_gpio_init(&gpio_nfc_irq_rfid_pull, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
 
-    furi_hal_gpio_init_simple(&gpio_rfid_carrier, GpioModeAnalog);
-
+    // PA5 is gpio_rfid_carrier_out — keep driven LOW (do not Analog the same pad).
     furi_hal_gpio_init(&gpio_rfid_data_in, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
 }
 
@@ -170,9 +154,6 @@ static void furi_hal_rfid_pins_read(void) {
 
     // comparator in (PA1 must stay analog for COMP1 IO3)
     furi_hal_gpio_init(&gpio_rfid_data_in, GpioModeAnalog, GpioPullNo, GpioSpeedLow);
-
-    // Re-claim PA0 for COMP1_OUT (IR RX may have taken the pin earlier)
-    furi_hal_rfid_comp_out_config();
 }
 
 static void furi_hal_rfid_pins_field(void) {
@@ -461,7 +442,6 @@ void furi_hal_rfid_comp_start(void) {
     LL_COMP_SetInputMinus(COMP1, LL_COMP_INPUT_MINUS_VREFINT);
     LL_COMP_SetInputHysteresis(COMP1, LL_COMP_HYSTERESIS_HIGH);
     LL_COMP_SetOutputPolarity(COMP1, LL_COMP_OUTPUTPOL_NONINVERTED);
-    furi_hal_rfid_comp_out_config();
     LL_COMP_Enable(COMP1);
     // Magic
     uint32_t wait_loop_index = ((80 / 10UL) * ((SystemCoreClock / (100000UL * 2UL)) + 1UL));

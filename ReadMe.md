@@ -108,12 +108,12 @@ graph TD
 | **I2C1 (Power/Default)** | I2C | SCL: PA9, SDA: PB9 | Used by INA219, MCP23017, and OLED |
 | **I2C3 (External)** | I2C | SCL: PA7, SDA: PB4 | Reserved for external modules/sensors |
 | **SPI1 (Shared)** | SPI | MOSI: PB5, SCK: PB3 | Shared SCK/MOSI bus for CC1101, NFC, and SD card |
-| **CC1101** | SPI + IRQ | CS: PA15, MISO: PA6, G0: PA1 | Sub-GHz transceiver |
+| **CC1101** | SPI + IRQ | CS: PA15, MISO: PA6, G0: PA1 | Sub-GHz transceiver (G0 uses PA1 / TIM2_CH2; shared with LF-RFID RX) |
 | **SD card** | SPI | CS: PA10, MISO: PA6 | MicroSD module |
 | **NFC** | SPI | CS: PE4, MISO: PB4, IRQ: PA2 | Elechouse ST25R3916 reader (Uses dedicated MISO) |
 | **MCP23017 Interrupt** | GPIO | INT: PB0 | Signals button state changes |
 | **IR** | GPIO | RX: PA0, TX: PA8 | Safe IR transmitter & receiver |
-| **LF-RFID (125 kHz)** | PWM / Timer | TX Carrier: PA5 (TIM2_CH1), RX Data: PA1 | 125 kHz coil driver transistor + envelope demodulator |
+| **LF-RFID (125 kHz)** | PWM / Timer | TX Carrier: PA5 (TIM2_CH1), RX Data: PA1 | 125 kHz coil driver + envelope demodulator (COMP1, shares PA1 with CC1101 G0) |
 | **Speaker** | PWM | PB8 (TIM16) | Sound buzzer |
 | **iButton** | 1-Wire | PA3 | Dallas 1-Wire keys |
 
@@ -254,7 +254,7 @@ A complete wiring schematic is available in the repository:
 | | `C3`, `R3` | 1 nF, 10 kOhm | RC Low-Pass Filter |
 | | `C4`, `R4` | 22 nF, 10 kOhm | AC Coupling Stage |
 | | `U1` | LM2904 / LM358 / MCP6002 | Op-Amp Signal Amplifier (`R5`-`R7` 100k, `R9` 50k) |
-| | `PA1` (Data In) | MCU `TIM1_CH1` | Demodulated RX Envelope Input |
+| | `PA1` (Data In) | MCU `COMP1 (IO3)` | Demodulated RX Envelope Input |
 
 ---
 

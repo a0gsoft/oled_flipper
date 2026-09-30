@@ -81,7 +81,7 @@ void furi_hal_power_init(void) {
     FURI_LOG_I(TAG, "Initializing INA219/INA226 power sensor");
     furi_hal_ina219_init();
     if(furi_hal_ina219_is_ready()) {
-        furi_hal_ina226_set_overcurrent_limit(2.0f);
+        furi_hal_ina226_set_overcurrent_limit(1.8f);
         furi_hal_ina226_enable_alert_interrupt(furi_hal_power_ina_alert_isr, NULL);
     }
     FURI_LOG_I(TAG, "INA219/INA226 initialization complete");
@@ -132,15 +132,12 @@ bool furi_hal_power_sleep_available(void) {
     return furi_hal_power.insomnia == 0;
 }
 
-// Remove internal static functions as they are no longer needed
-// static inline bool furi_hal_power_deep_sleep_available(void) { ... }
-// static inline void furi_hal_power_light_sleep(void) { ... }
-// static inline void furi_hal_power_suspend_aux_periphs(void) { ... }
-// static inline void furi_hal_power_resume_aux_periphs(void) { ... }
-// static inline void furi_hal_power_deep_sleep(void) { ... }
+static inline void furi_hal_power_light_sleep(void) {
+    __WFI();
+}
 
 void furi_hal_power_sleep(void) {
-    // Do nothing (don't actually sleep)
+    furi_hal_power_light_sleep();
 }
 
 uint8_t furi_hal_power_get_pct(void) {

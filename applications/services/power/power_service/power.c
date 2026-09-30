@@ -501,38 +501,12 @@ static void power_message_callback(FuriEventLoopObject* object, void* context) {
     case PowerMessageTypeReboot:
         power_handle_reboot(msg.boot_mode);
         break;
-    case PowerMessageTypeGetInfo:
-        *msg.power_info = power->info;
-        break;
-    case PowerMessageTypeIsBatteryHealthy:
-        *msg.bool_param = power->info.health > POWER_HEALTH_LOW_THRESHOLD;
-        break;
     case PowerMessageTypeShowBatteryLowWarning:
         power->show_battery_low_warning = *msg.bool_param;
         break;
     case PowerMessageTypeSwitchOTG:
+        // DIY board has no OTG boost (HAL always no-op). Keep the flag for API callers.
         power->is_otg_requested = *msg.bool_param;
-        if(power->is_otg_requested) {
-            // Only try to enable if VBUS voltage is low, otherwise charger will refuse
-            if(power->info.voltage_vbus < 4.5f) {
-                size_t retries = 5;
-                while(retries-- > 0) {
-                    if(furi_hal_power_enable_otg()) {
-                        break;
-                    }
-                }
-                if(!retries) {
-                    FURI_LOG_W(TAG, "Failed to enable OTG, will try later");
-                }
-            } else {
-                FURI_LOG_W(
-                    TAG,
-                    "Postponing OTG enable: VBUS(%0.1f) >= 4.5v",
-                    (double)power->info.voltage_vbus);
-            }
-        } else {
-            furi_hal_power_disable_otg();
-        }
         break;
     case PowerMessageTypeGetSettings:
         furi_assert(msg.lock);
@@ -598,19 +572,6 @@ static void power_tick_callback(void* context) {
         power->battery_view_port, momentum_settings.battery_icon != BatteryIconOff);
     if(need_refresh) {
         view_port_update(power->battery_view_port);
-    }
-    // Check OTG status, disable in case of a fault
-    if(furi_hal_power_check_otg_fault()) {
-        FURI_LOG_E(TAG, "OTG fault detected, disabling OTG");
-        furi_hal_power_disable_otg();
-        power->is_otg_requested = false;
-    }
-
-    // Change OTG state if needed (i.e. after disconnecting USB power)
-    if(power->is_otg_requested &&
-       (!power->info.is_otg_enabled && power->info.voltage_vbus < 4.5f)) {
-        FURI_LOG_D(TAG, "OTG requested but not enabled, enabling OTG");
-        furi_hal_power_enable_otg();
     }
 }
 
