@@ -178,11 +178,11 @@ static void furi_hal_rfid_pins_field(void) {
 }
 
 void furi_hal_rfid_pin_pull_release(void) {
-    furi_hal_gpio_write(&gpio_nfc_irq_rfid_pull, true);
+    furi_hal_gpio_write(&gpio_nfc_irq_rfid_pull, false); // Q3 off, tank free
 }
 
 void furi_hal_rfid_pin_pull_pulldown(void) {
-    furi_hal_gpio_write(&gpio_nfc_irq_rfid_pull, false);
+    furi_hal_gpio_write(&gpio_nfc_irq_rfid_pull, true); // Q3 on, tank damped
 }
 
 void furi_hal_rfid_tim_read_start(float freq, float duty_cycle) {

@@ -88,6 +88,7 @@ node_modules/
 # Local project files (not for repo)
 .agents/
 CHANGELOG_v*.md
+RELEASE_NOTES*.md
 *.kicad_sym
 *.kicad_mod
 telegram_bot/
