@@ -105,3 +105,5 @@ scratch/
 drc_report.json
 fp-lib-table
 rfid_lf_gerber.zip
+_fzcheck/
+fz_oled_avatar_under_1mb.png

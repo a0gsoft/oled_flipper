@@ -37,8 +37,11 @@ uint8_t bit_lib_get_bits(const uint8_t* data, size_t position, uint8_t length) {
     uint8_t shift = position % 8;
     if(shift == 0) {
         return data[position / 8] >> (8 - length);
+    } else if(shift + length <= 8) {
+        // OFW #4424: requested bits fit in one byte, don't read past it
+        uint8_t value = (uint8_t)(data[position / 8] << shift);
+        return value >> (8 - length);
     } else {
-        // TODO FL-3534: fix read out of bounds
         uint8_t value = (data[position / 8] << (shift));
         value |= data[position / 8 + 1] >> (8 - shift);
         value = value >> (8 - length);

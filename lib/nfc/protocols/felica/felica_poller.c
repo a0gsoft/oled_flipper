@@ -126,21 +126,26 @@ NfcCommand felica_poller_state_handler_list_system(FelicaPoller* instance) {
 
     NfcCommand command = NfcCommandContinue;
 
-    FelicaListSystemCodeCommandResponse* response_system_code;
+    FelicaListSystemCodeCommandResponse* response_system_code = NULL;
     FelicaError error = felica_poller_list_system_code(instance, &response_system_code);
 
-    instance->systems_total = response_system_code->system_count;
-    simple_array_init(instance->data->systems, instance->systems_total);
-    uint8_t* system_codes = response_system_code->system_code;
+    // OFW #4428: response is only valid on success
+    if(error == FelicaErrorNone && response_system_code &&
+       response_system_code->system_count > 0) {
+        instance->systems_total = response_system_code->system_count;
+        simple_array_init(instance->data->systems, instance->systems_total);
+        uint8_t* system_codes = response_system_code->system_code;
 
-    for(uint8_t i = 0; i < instance->systems_total; i++) {
-        FelicaSystem* system = simple_array_get(instance->data->systems, i);
-        system->system_code = system_codes[i * 2] << 8 | system_codes[i * 2 + 1];
-        system->system_code_idx = i;
-    }
-
-    if(error == FelicaErrorNone) {
+        for(uint8_t i = 0; i < instance->systems_total; i++) {
+            FelicaSystem* system = simple_array_get(instance->data->systems, i);
+            system->system_code = system_codes[i * 2] << 8 | system_codes[i * 2 + 1];
+            system->system_code_idx = i;
+        }
         instance->state = FelicaPollerStateSelectSystemIndex;
+    } else if(error == FelicaErrorNone) {
+        instance->felica_event.type = FelicaPollerEventTypeError;
+        instance->felica_event_data.error = FelicaErrorProtocol;
+        instance->state = FelicaPollerStateReadFailed;
     } else if(error != FelicaErrorTimeout) {
         instance->felica_event.type = FelicaPollerEventTypeError;
         instance->felica_event_data.error = error;

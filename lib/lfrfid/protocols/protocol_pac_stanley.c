@@ -44,7 +44,8 @@ uint8_t* protocol_pac_stanley_get_data(ProtocolPACStanley* protocol) {
 }
 
 static void protocol_pac_stanley_decode(ProtocolPACStanley* protocol) {
-    uint8_t asciiCardId[8];
+    // OFW #4427: +1 for NUL terminator expected by hex_chars_to_uint8
+    uint8_t asciiCardId[9];
     for(size_t idx = 0; idx < 8; idx++) {
         uint8_t byte = bit_lib_reverse_8_fast(bit_lib_get_bits(
             protocol->encoded_data,
@@ -52,6 +53,7 @@ static void protocol_pac_stanley_decode(ProtocolPACStanley* protocol) {
             8));
         asciiCardId[idx] = byte & 0x7F; // discard the parity bit
     }
+    asciiCardId[8] = '\0';
 
     hex_chars_to_uint8((char*)asciiCardId, protocol->data);
 }

@@ -132,6 +132,19 @@ bool protocol_pyramid_get_parity(const uint8_t* bits, uint8_t type, int length) 
     return x ^ type;
 }
 
+// OFW #4426: parity over an arbitrary bit range (offset in bits, not bytes)
+static bool protocol_pyramid_get_parity_range(
+    const uint8_t* bits,
+    uint8_t type,
+    size_t bit_offset,
+    size_t length) {
+    int x = 0;
+    for(size_t i = 0; i < length; i++)
+        x += bit_lib_get_bit(bits, bit_offset + i);
+    x %= 2;
+    return x ^ type;
+}
+
 void protocol_pyramid_add_wiegand_parity(
     uint8_t* target,
     uint8_t target_position,
@@ -143,7 +156,7 @@ void protocol_pyramid_add_wiegand_parity(
     bit_lib_set_bit(
         target,
         target_position + length + 1,
-        protocol_pyramid_get_parity(source + length / 2, 1 /* odd */, length / 2));
+        protocol_pyramid_get_parity_range(source, 1 /* odd */, length / 2, length / 2));
 }
 
 static void protocol_pyramid_encode(ProtocolPyramid* protocol) {

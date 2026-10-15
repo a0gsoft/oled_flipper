@@ -229,9 +229,10 @@ InfraredMessage*
     }
     decoder->level = level; // start with low level (Space timing)
 
+    // OFW #4429: check element count (not byte size) before writing
+    furi_check(decoder->timings_cnt < COUNT_OF(decoder->timings));
     decoder->timings[decoder->timings_cnt] = duration;
     decoder->timings_cnt++;
-    furi_check(decoder->timings_cnt <= sizeof(decoder->timings));
 
     while(1) {
         switch(decoder->state) {
@@ -288,6 +289,9 @@ void* infrared_common_decoder_alloc(const InfraredCommonProtocolSpec* protocol) 
     InfraredCommonDecoder* decoder = malloc(alloc_size);
     decoder->protocol = protocol;
     decoder->level = true;
+    // OFW #4429: malloc leaves timings_cnt/state uninitialized
+    decoder->timings_cnt = 0;
+    infrared_common_decoder_reset_state(decoder);
     return decoder;
 }
 
